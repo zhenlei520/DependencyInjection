@@ -92,10 +92,14 @@ namespace Microsoft.Extensions.DependencyInjection
             ServiceType = serviceType;
         }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// 生命周期
+        /// </summary>
         public ServiceLifetime Lifetime { get; }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// 服务类型，接口
+        /// </summary>
         public Type ServiceType { get; }
 
         /// <summary>
@@ -108,7 +112,9 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         public object ImplementationInstance { get; }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// 实现工厂
+        /// </summary>
         public Func<IServiceProvider, object> ImplementationFactory { get; }
 
         internal Type GetImplementationType()
