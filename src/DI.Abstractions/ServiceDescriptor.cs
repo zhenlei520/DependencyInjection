@@ -98,10 +98,14 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <inheritdoc />
         public Type ServiceType { get; }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// 实现类型
+        /// </summary>
         public Type ImplementationType { get; }
 
-        /// <inheritdoc />
+        /// <summary>
+        /// 实现实例
+        /// </summary>
         public object ImplementationInstance { get; }
 
         /// <inheritdoc />
@@ -508,7 +512,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="implementationFactory">A factory to create new instances of the service implementation.</param>
         /// <param name="lifetime">The lifetime of the service.</param>
         /// <returns>A new instance of <see cref="ServiceDescriptor"/>.</returns>
-        public static ServiceDescriptor Describe(Type serviceType, Func<IServiceProvider, object> implementationFactory, ServiceLifetime lifetime)
+        public static ServiceDescriptor Describe(Type serviceType, Func<IServiceProvider, object> implementationFactory,
+            ServiceLifetime lifetime)
         {
             return new ServiceDescriptor(serviceType, implementationFactory, lifetime);
         }
