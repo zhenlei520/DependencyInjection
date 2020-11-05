@@ -400,6 +400,7 @@ namespace Microsoft.Extensions.DependencyInjection.Extensions
         }
 
         /// <summary>
+        /// 注册单例
         /// Adds the specified <paramref name="service"/> as a <see cref="ServiceLifetime.Singleton"/> service
         /// to the <paramref name="collection"/> if the service type hasn't already been registered.
         /// </summary>
@@ -424,6 +425,7 @@ namespace Microsoft.Extensions.DependencyInjection.Extensions
         }
 
         /// <summary>
+        /// 注册单例
         /// Adds the specified <paramref name="service"/> as a <see cref="ServiceLifetime.Singleton"/> service
         /// with the <paramref name="implementationType"/> implementation
         /// to the <paramref name="collection"/> if the service type hasn't already been registered.
@@ -525,6 +527,7 @@ namespace Microsoft.Extensions.DependencyInjection.Extensions
         }
 
         /// <summary>
+        /// 注册单例
         /// Adds the specified <typeparamref name="TService"/> as a <see cref="ServiceLifetime.Singleton"/> service
         /// with an instance specified in <paramref name="instance"/>
         /// to the <paramref name="collection"/> if the service type hasn't already been registered.
@@ -550,6 +553,7 @@ namespace Microsoft.Extensions.DependencyInjection.Extensions
         }
 
         /// <summary>
+        /// 注册单例
         /// Adds the specified <typeparamref name="TService"/> as a <see cref="ServiceLifetime.Singleton"/> service
         /// using the factory specified in <paramref name="implementationFactory"/>
         /// to the <paramref name="services"/> if the service type hasn't already been registered.

@@ -25,7 +25,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(provider));
             }
 
-            return (T)provider.GetService(typeof(T));
+            return (T) provider.GetService(typeof(T));
         }
 
         /// <summary>
@@ -46,13 +46,15 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 throw new ArgumentNullException(nameof(serviceType));
             }
-
+            // 如果当前ServiceProvider实现了 ISupportRequiredService 
+            // 则直接调用当前ISupportRequiredService的GetRequiredService获取服务实例
             var requiredServiceSupportingProvider = provider as ISupportRequiredService;
             if (requiredServiceSupportingProvider != null)
             {
                 return requiredServiceSupportingProvider.GetRequiredService(serviceType);
             }
-
+            // 如果当前ServiceProvider未实现ISupportRequiredService
+            // 就直接调用GetService获取服务实例,但是如果服务实例为空,则抛出异常
             var service = provider.GetService(serviceType);
             if (service == null)
             {
@@ -63,6 +65,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
+        /// 泛型版本
         /// Get service of type <typeparamref name="T"/> from the <see cref="IServiceProvider"/>.
         /// </summary>
         /// <typeparam name="T">The type of service object to get.</typeparam>
@@ -76,10 +79,11 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(provider));
             }
 
-            return (T)provider.GetRequiredService(typeof(T));
+            return (T) provider.GetRequiredService(typeof(T));
         }
 
         /// <summary>
+        /// 获取指定注册类型T的所有服务实例
         /// Get an enumeration of services of type <typeparamref name="T"/> from the <see cref="IServiceProvider"/>.
         /// </summary>
         /// <typeparam name="T">The type of service object to get.</typeparam>
@@ -113,15 +117,18 @@ namespace Microsoft.Extensions.DependencyInjection
                 throw new ArgumentNullException(nameof(serviceType));
             }
 
+            //制造一个serviceType类型的IEnumberable<>集合,serviceTypele类型作为当前集合的泛型参数
             var genericEnumerable = typeof(IEnumerable<>).MakeGenericType(serviceType);
-            return (IEnumerable<object>)provider.GetRequiredService(genericEnumerable);
+            return (IEnumerable<object>) provider.GetRequiredService(genericEnumerable);
         }
 
         /// <summary>
-        /// Creates a new <see cref="IServiceScope"/> that can be used to resolve scoped services.
+        ///	创建一个子IServiceProvider实例
+        ///	内部其实将IServiceScopeFactory接口和一个ServiceScopeFactoryCallSite进行了注册
+        ///	这个是在IServiceProviderEngine的实现类ServiceProviderEngine中的,以后在详细介绍
         /// </summary>
-        /// <param name="provider">The <see cref="IServiceProvider"/> to create the scope from.</param>
-        /// <returns>A <see cref="IServiceScope"/> that can be used to resolve scoped services.</returns>
+        /// <param name="provider"></param>
+        /// <returns></returns>
         public static IServiceScope CreateScope(this IServiceProvider provider)
         {
             return provider.GetRequiredService<IServiceScopeFactory>().CreateScope();

@@ -5,16 +5,22 @@ using System;
 
 namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
 {
+    /// <summary>
+    /// 缓存实例对象时使用Key 
+    /// </summary>
     internal struct ServiceCacheKey: IEquatable<ServiceCacheKey>
     {
         public static ServiceCacheKey Empty { get; } = new ServiceCacheKey(null, 0);
 
         /// <summary>
+        /// 注册服务类型
         /// Type of service being cached
         /// </summary>
         public Type Type { get; }
 
         /// <summary>
+        /// 以IEnumerable类型解析时服务的反向索引,默认实例0
+        /// 相同Type时此值为++
         /// Reverse index of the service when resolved in <code>IEnumerable&lt;Type&gt;</code> where default instance gets slot 0.
         /// For example for service collection
         ///  IService Impl1

@@ -6,11 +6,27 @@ using System.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
 {
+    /// <summary>
+    /// 以类型注册,也就是实例化对象时以构造函数实例化
+    /// </summary>
     internal class ConstructorCallSite : ServiceCallSite
     {
+        /// <summary>
+        /// 实例化对象时所使用的构造器,当前构造器的最优构造器
+        /// </summary>
         internal ConstructorInfo ConstructorInfo { get; }
+        
+        /// <summary>
+        /// 当前构造器中所有参数的ServiceCallSite集合
+        /// </summary>
         internal ServiceCallSite[] ParameterCallSites { get; }
 
+        /// <summary>
+        /// 最优构造器为无参
+        /// </summary>
+        /// <param name="cache"></param>
+        /// <param name="serviceType"></param>
+        /// <param name="constructorInfo"></param>
         public ConstructorCallSite(ResultCache cache, Type serviceType, ConstructorInfo constructorInfo) : this(cache, serviceType, constructorInfo, Array.Empty<ServiceCallSite>())
         {
         }
@@ -24,6 +40,9 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
 
         public override Type ServiceType { get; }
 
+        /// <summary>
+        /// 使用构造器的DeclaringType
+        /// </summary>
         public override Type ImplementationType => ConstructorInfo.DeclaringType;
         public override CallSiteKind Kind { get; } = CallSiteKind.Constructor;
     }

@@ -5,6 +5,9 @@ using System;
 
 namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
 {
+    /// <summary>
+    /// 获取子容器所使用,在Engine类中会注册此类实例,然后获取子类容器使用
+    /// </summary>
     internal class ServiceScopeFactoryCallSite : ServiceCallSite
     {
         public ServiceScopeFactoryCallSite() : base(ResultCache.None)

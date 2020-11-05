@@ -5,8 +5,14 @@ using System;
 
 namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
 {
+    /// <summary>
+    /// 单例模式以具体实例注册时使用
+    /// </summary>
     internal class ConstantCallSite : ServiceCallSite
     {
+        /// <summary>
+        /// 注册时提供的具体实例对象值
+        /// </summary>
         internal object DefaultValue { get; }
 
         public ConstantCallSite(Type serviceType, object defaultValue): base(ResultCache.None)
@@ -14,8 +20,19 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
             DefaultValue = defaultValue;
         }
 
+        /// <summary>
+        /// 注册的基类类型
+        /// </summary>
         public override Type ServiceType => DefaultValue.GetType();
+        
+        /// <summary>
+        /// 其实际对象所对应的类型
+        /// </summary>
         public override Type ImplementationType => DefaultValue.GetType();
+        
+        /// <summary>
+        /// 当前ServiceCallSite所对应的类型
+        /// </summary>
         public override CallSiteKind Kind { get; } = CallSiteKind.Constant;
     }
 }

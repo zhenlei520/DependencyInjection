@@ -12,8 +12,16 @@ namespace Microsoft.Extensions.DependencyInjection
     /// </summary>
     public sealed class ServiceProvider : IServiceProvider, IDisposable, IServiceProviderEngineCallback
     {
+        /// <summary>
+        /// ServiceProvider工作引擎接口
+        /// 这个接口是一个核心接口
+        /// 使用这个接口的子类进行调用缓存各种注册服务和调用访问者对象进行获取实例对象
+        /// </summary>
         private readonly IServiceProviderEngine _engine;
 
+        /// <summary>
+        /// 此属性缓存当前注册类型,当ServiceProviderOptions.ValidateScopes为true进行验证
+        /// </summary>
         private readonly CallSiteValidator _callSiteValidator;
 
         internal ServiceProvider(IEnumerable<ServiceDescriptor> serviceDescriptors, ServiceProviderOptions options)
@@ -27,7 +35,7 @@ namespace Microsoft.Extensions.DependencyInjection
             switch (options.Mode)
             {
                 case ServiceProviderMode.Dynamic:
-                    _engine = new DynamicServiceProviderEngine(serviceDescriptors, callback);
+                    _engine = new DynamicServiceProviderEngine(serviceDescriptors, callback);//实例化 DynamicServiceProviderEngine
                     break;
                 case ServiceProviderMode.Runtime:
                     _engine = new RuntimeServiceProviderEngine(serviceDescriptors, callback);

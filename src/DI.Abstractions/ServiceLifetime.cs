@@ -5,7 +5,7 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
     /// Specifies the lifetime of a service in an <see cref="IServiceCollection"/>.
-    /// 声明周期类型
+    /// 生命周期类型
     /// </summary>
     public enum ServiceLifetime
     {

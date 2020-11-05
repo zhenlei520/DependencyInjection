@@ -6,6 +6,9 @@ using System.Collections.Generic;
 
 namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
 {
+    /// <summary>
+    /// 调用获取当前注册类型的所有实例,也就是GetServices()时
+    /// </summary>
     internal class IEnumerableCallSite : ServiceCallSite
     {
         internal Type ItemType { get; }

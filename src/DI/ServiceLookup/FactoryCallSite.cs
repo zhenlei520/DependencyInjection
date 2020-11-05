@@ -5,6 +5,9 @@ using System;
 
 namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
 {
+    /// <summary>
+    /// 以以工厂形式
+    /// </summary>
     internal class FactoryCallSite : ServiceCallSite
     {
         public Func<IServiceProvider, object> Factory { get; }

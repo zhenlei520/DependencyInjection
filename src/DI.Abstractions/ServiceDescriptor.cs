@@ -98,25 +98,29 @@ namespace Microsoft.Extensions.DependencyInjection
         public ServiceLifetime Lifetime { get; }
 
         /// <summary>
-        /// 服务类型，接口
+        /// 服务基类型
         /// </summary>
         public Type ServiceType { get; }
 
         /// <summary>
-        /// 实现类型
+        /// 注册类型的实例类型(派生类型)
         /// </summary>
         public Type ImplementationType { get; }
 
         /// <summary>
-        /// 实现实例
+        ///  注册类型的实例对象
         /// </summary>
         public object ImplementationInstance { get; }
 
         /// <summary>
-        /// 实现工厂
+        /// 注册类型实例化对象的工厂
         /// </summary>
         public Func<IServiceProvider, object> ImplementationFactory { get; }
 
+        /// <summary>
+        /// 获取当前注册类型的实例类型
+        /// </summary>
+        /// <returns></returns>
         internal Type GetImplementationType()
         {
             if (ImplementationType != null)

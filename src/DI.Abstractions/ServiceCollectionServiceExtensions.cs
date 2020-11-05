@@ -587,6 +587,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
+        /// 单例
         /// Adds a singleton service of the type specified in <paramref name="serviceType"/> with an
         /// instance specified in <paramref name="implementationInstance"/> to the
         /// specified <see cref="IServiceCollection"/>.
@@ -622,6 +623,7 @@ namespace Microsoft.Extensions.DependencyInjection
         }
 
         /// <summary>
+        /// 单例
         /// Adds a singleton service of the type specified in <typeparamref name="TService" /> with an
         /// instance specified in <paramref name="implementationInstance"/> to the
         /// specified <see cref="IServiceCollection"/>.
@@ -648,6 +650,14 @@ namespace Microsoft.Extensions.DependencyInjection
             return services.AddSingleton(typeof(TService), implementationInstance);
         }
 
+        /// <summary>
+        /// 基类和派生类型
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="serviceType"></param>
+        /// <param name="implementationType"></param>
+        /// <param name="lifetime"></param>
+        /// <returns></returns>
         private static IServiceCollection Add(
             IServiceCollection collection,
             Type serviceType,
@@ -659,6 +669,14 @@ namespace Microsoft.Extensions.DependencyInjection
             return collection;
         }
 
+        /// <summary>
+        /// 工厂实例化
+        /// </summary>
+        /// <param name="collection"></param>
+        /// <param name="serviceType"></param>
+        /// <param name="implementationFactory"></param>
+        /// <param name="lifetime"></param>
+        /// <returns></returns>
         private static IServiceCollection Add(
             IServiceCollection collection,
             Type serviceType,

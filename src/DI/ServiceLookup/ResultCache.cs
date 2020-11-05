@@ -8,6 +8,9 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
 {
     internal struct ResultCache
     {
+        /// <summary>
+        /// 默认ResultCache 
+        /// </summary>
         public static ResultCache None { get; } = new ResultCache(CallSiteResultCacheLocation.None, ServiceCacheKey.Empty);
 
         internal ResultCache(CallSiteResultCacheLocation lifetime, ServiceCacheKey cacheKey)
@@ -38,8 +41,15 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
             Key = new ServiceCacheKey(type, slot);
         }
 
+        /// <summary>
+        /// 当前服务实例缓存位置
+        /// </summary>
         public CallSiteResultCacheLocation Location { get; set; }
 
+        /// <summary>
+        /// 当前服务实例所缓存的使用Key
+        /// ServiceCacheKey使用基类类型和一个solt(一个数值,每实例化同一个基类类型时使用不同的solt)
+        /// </summary>
         public ServiceCacheKey Key { get; set; }
     }
 }
