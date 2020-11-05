@@ -15,6 +15,10 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
         }
 
         public override Type ServiceType { get; } = typeof(IServiceScopeFactory);
+        
+        /// <summary>
+        /// IServiceProviderEngine派生类型,这个类型也实现了IServiceScopeFactory接口,所以是一个子容器工厂类型
+        /// </summary>
         public override Type ImplementationType { get; } = typeof(ServiceProviderEngine);
         public override CallSiteKind Kind { get; } = CallSiteKind.ServiceScopeFactory;
     }

@@ -17,8 +17,12 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
     {
         private const int DefaultSlot = 0;
         private readonly List<ServiceDescriptor> _descriptors;
-        private readonly ConcurrentDictionary<Type, ServiceCallSite> _callSiteCache = new ConcurrentDictionary<Type, ServiceCallSite>();
-        private readonly Dictionary<Type, ServiceDescriptorCacheItem> _descriptorLookup = new Dictionary<Type, ServiceDescriptorCacheItem>();
+
+        private readonly ConcurrentDictionary<Type, ServiceCallSite> _callSiteCache =
+            new ConcurrentDictionary<Type, ServiceCallSite>();
+
+        private readonly Dictionary<Type, ServiceDescriptorCacheItem> _descriptorLookup =
+            new Dictionary<Type, ServiceDescriptorCacheItem>();
 
         private readonly StackGuard _stackGuard;
 
@@ -48,7 +52,8 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
                     if (implementationTypeInfo.IsAbstract || implementationTypeInfo.IsInterface)
                     {
                         throw new ArgumentException(
-                            Resources.FormatTypeCannotBeActivated(descriptor.ImplementationType, descriptor.ServiceType));
+                            Resources.FormatTypeCannotBeActivated(descriptor.ImplementationType,
+                                descriptor.ServiceType));
                     }
                 }
                 else if (descriptor.ImplementationInstance == null && descriptor.ImplementationFactory == null)
@@ -61,7 +66,8 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
                         implementationTypeInfo.IsInterface)
                     {
                         throw new ArgumentException(
-                            Resources.FormatTypeCannotBeActivated(descriptor.ImplementationType, descriptor.ServiceType));
+                            Resources.FormatTypeCannotBeActivated(descriptor.ImplementationType,
+                                descriptor.ServiceType));
                     }
                 }
 
@@ -84,7 +90,8 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
         {
             if (!_stackGuard.TryEnterOnCurrentStack())
             {
-                return _stackGuard.RunOnEmptyStack((type, chain) => CreateCallSite(type, chain), serviceType, callSiteChain);
+                return _stackGuard.RunOnEmptyStack((type, chain) => CreateCallSite(type, chain), serviceType,
+                    callSiteChain);
             }
 
             ServiceCallSite callSite;
@@ -179,7 +186,8 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
             return null;
         }
 
-        private ServiceCallSite TryCreateExact(ServiceDescriptor descriptor, Type serviceType, CallSiteChain callSiteChain, int slot)
+        private ServiceCallSite TryCreateExact(ServiceDescriptor descriptor, Type serviceType,
+            CallSiteChain callSiteChain, int slot)
         {
             if (serviceType == descriptor.ServiceType)
             {
@@ -195,7 +203,8 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
                 }
                 else if (descriptor.ImplementationType != null)
                 {
-                    callSite = CreateConstructorCallSite(lifetime, descriptor.ServiceType, descriptor.ImplementationType, callSiteChain);
+                    callSite = CreateConstructorCallSite(lifetime, descriptor.ServiceType,
+                        descriptor.ImplementationType, callSiteChain);
                 }
                 else
                 {
@@ -208,7 +217,8 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
             return null;
         }
 
-        private ServiceCallSite TryCreateOpenGeneric(ServiceDescriptor descriptor, Type serviceType, CallSiteChain callSiteChain, int slot)
+        private ServiceCallSite TryCreateOpenGeneric(ServiceDescriptor descriptor, Type serviceType,
+            CallSiteChain callSiteChain, int slot)
         {
             if (serviceType.IsConstructedGenericType &&
                 serviceType.GetGenericTypeDefinition() == descriptor.ServiceType)
@@ -222,7 +232,8 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
             return null;
         }
 
-        private ServiceCallSite CreateConstructorCallSite(ResultCache lifetime, Type serviceType, Type implementationType,
+        private ServiceCallSite CreateConstructorCallSite(ResultCache lifetime, Type serviceType,
+            Type implementationType,
             CallSiteChain callSiteChain)
         {
             callSiteChain.Add(serviceType, implementationType);
@@ -329,7 +340,8 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
             {
                 var callSite = GetCallSite(parameters[index].ParameterType, callSiteChain);
 
-                if (callSite == null && ParameterDefaultValue.TryGetDefaultValue(parameters[index], out var defaultValue))
+                if (callSite == null &&
+                    ParameterDefaultValue.TryGetDefaultValue(parameters[index], out var defaultValue))
                 {
                     callSite = new ConstantCallSite(serviceType, defaultValue);
                 }
@@ -360,7 +372,14 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
 
         private struct ServiceDescriptorCacheItem
         {
+            /// <summary>
+            /// 代表此注册服务的第一个ServiceDescriptor
+            /// </summary>
             private ServiceDescriptor _item;
+
+            /// <summary>
+            /// 此字段表示除去第一个的的所有ServiceDescriptor集合
+            /// </summary>
             private List<ServiceDescriptor> _items;
 
             public ServiceDescriptor Last
@@ -409,6 +428,15 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
                 }
             }
 
+            /// <summary>
+            /// 将指定固定ServiceDescriptor添加到集合中
+            /// 首先实例化一个新的 ServiceDescriptorCacheItem对象
+            /// 如果当前对象_item属性为空,则将当前参数作为新ServiceDescriptorCacheItem对象>item属性
+            /// 如果当前对象_item不为空,则当前的对象_item作为新ServiceDescriptorCacheItem对象>item属性,并且将原对象集合赋值给新对象集合,并且将参数加入到新对象集合中,然后返回新对象,
+            /// 也就是第一个加入的永远是_item值,其后加入的放入集合中
+            /// </summary>
+            /// <param name="descriptor"></param>
+            /// <returns></returns>
             public ServiceDescriptorCacheItem Add(ServiceDescriptor descriptor)
             {
                 var newCacheItem = new ServiceDescriptorCacheItem();
@@ -423,6 +451,7 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
                     newCacheItem._items = _items ?? new List<ServiceDescriptor>();
                     newCacheItem._items.Add(descriptor);
                 }
+
                 return newCacheItem;
             }
         }
