@@ -22,6 +22,12 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
 
         protected override ILEmitCallSiteAnalysisResult VisitDisposeCache(ServiceCallSite transientCallSite, object argument) => VisitCallSiteMain(transientCallSite, argument);
 
+        /// <summary>
+        /// 使用反射方法实例化对象,并且如果构造函数不为空则获取所有参数的实例对象
+        /// </summary>
+        /// <param name="constructorCallSite"></param>
+        /// <param name="argument"></param>
+        /// <returns></returns>
         protected override ILEmitCallSiteAnalysisResult VisitConstructor(ConstructorCallSite constructorCallSite, object argument)
         {
             var result = new ILEmitCallSiteAnalysisResult(ConstructorILSize);
@@ -38,13 +44,31 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
         {
             return new ILEmitCallSiteAnalysisResult(ScopedILSize, hasScope: true).Add(VisitCallSiteMain(scopedCallSite, argument));
         }
-
+        
+        /// <summary>
+        /// 直接返回了RuntimeResolverContext封装的容器
+        /// </summary>
+        /// <param name="constantCallSite"></param>
+        /// <param name="argument"></param>
+        /// <returns></returns>
         protected override ILEmitCallSiteAnalysisResult VisitConstant(ConstantCallSite constantCallSite, object argument) => new ILEmitCallSiteAnalysisResult(ConstantILSize);
 
         protected override ILEmitCallSiteAnalysisResult VisitServiceProvider(ServiceProviderCallSite serviceProviderCallSite, object argument) => new ILEmitCallSiteAnalysisResult(ServiceProviderSize);
 
+        /// <summary>
+        /// 直接返回了RuntimeResolverContext封装的容器
+        /// </summary>
+        /// <param name="serviceScopeFactoryCallSite"></param>
+        /// <param name="argument"></param>
+        /// <returns></returns>
         protected override ILEmitCallSiteAnalysisResult VisitServiceScopeFactory(ServiceScopeFactoryCallSite serviceScopeFactoryCallSite, object argument) => new ILEmitCallSiteAnalysisResult(ConstantILSize);
 
+        /// <summary>
+        /// IEnumerableCallSite中ServiceCallSites集合的所有对象,并组装到一个数组进行返回
+        /// </summary>
+        /// <param name="enumerableCallSite"></param>
+        /// <param name="argument"></param>
+        /// <returns></returns>
         protected override ILEmitCallSiteAnalysisResult VisitIEnumerable(IEnumerableCallSite enumerableCallSite, object argument)
         {
             var result = new ILEmitCallSiteAnalysisResult(ConstructorILSize);
@@ -55,6 +79,12 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
             return result;
         }
 
+        /// <summary>
+        /// 调用了FactoryCallSite实例对象的工厂方法获取实例
+        /// </summary>
+        /// <param name="factoryCallSite"></param>
+        /// <param name="argument"></param>
+        /// <returns></returns>
         protected override ILEmitCallSiteAnalysisResult VisitFactory(FactoryCallSite factoryCallSite, object argument) => new ILEmitCallSiteAnalysisResult(FactoryILSize);
 
         public ILEmitCallSiteAnalysisResult CollectGenerationInfo(ServiceCallSite callSite) => VisitCallSite(callSite, null);

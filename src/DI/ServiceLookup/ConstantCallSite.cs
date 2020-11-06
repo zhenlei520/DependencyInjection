@@ -15,6 +15,11 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
         /// </summary>
         internal object DefaultValue { get; }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="serviceType">注册的基类类型</param>
+        /// <param name="defaultValue">其实际对象所对应的类型</param>
         public ConstantCallSite(Type serviceType, object defaultValue): base(ResultCache.None)
         {
             DefaultValue = defaultValue;

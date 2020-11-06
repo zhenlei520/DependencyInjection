@@ -10,6 +10,7 @@ namespace Microsoft.Extensions.DependencyInjection
     public interface IServiceScopeFactory
     {
         /// <summary>
+        /// 创建子容器接口
         /// Create an <see cref="Microsoft.Extensions.DependencyInjection.IServiceScope"/> which
         /// contains an <see cref="System.IServiceProvider"/> used to resolve dependencies from a
         /// newly created scope.

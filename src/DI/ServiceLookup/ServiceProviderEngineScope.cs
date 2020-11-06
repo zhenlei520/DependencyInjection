@@ -6,13 +6,22 @@ using System.Collections.Generic;
 
 namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
 {
+    /// <summary>
+    /// ,
+    /// </summary>
     internal class ServiceProviderEngineScope : IServiceScope, IServiceProvider
     {
         // For testing only
         internal Action<object> _captureDisposableCallback;
 
+        /// <summary>
+        /// IDisposabl集合,此字段缓存的时所有实现了IDisposable接口的注册服务,以便在释放此容器实例时并将这些服务一起释放
+        /// </summary>
         private List<IDisposable> _disposables;
 
+        /// <summary>
+        /// 判断此属性是否已被是否释放
+        /// </summary>
         private bool _disposed;
 
         public ServiceProviderEngineScope(ServiceProviderEngine engine)
@@ -20,6 +29,9 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
             Engine = engine;
         }
 
+        /// <summary>
+        /// 缓存的实例对象集合
+        /// </summary>
         internal Dictionary<ServiceCacheKey, object> ResolvedServices { get; } = new Dictionary<ServiceCacheKey, object>();
 
         public ServiceProviderEngine Engine { get; }
@@ -36,6 +48,7 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
 
         public IServiceProvider ServiceProvider => this;
 
+        
         public void Dispose()
         {
             lock (ResolvedServices)

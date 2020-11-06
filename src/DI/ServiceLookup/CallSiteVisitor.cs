@@ -12,6 +12,13 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
             _stackGuard = new StackGuard();
         }
 
+        /// <summary>
+        /// 根据服务对象的生命周期进行访问访问实例
+        /// </summary>
+        /// <param name="callSite"></param>
+        /// <param name="argument"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
         protected virtual TResult VisitCallSite(ServiceCallSite callSite, TArgument argument)
         {
             if (!_stackGuard.TryEnterOnCurrentStack())
@@ -19,6 +26,7 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
                 return _stackGuard.RunOnEmptyStack((c, a) => VisitCallSite(c, a), callSite, argument);
             }
 
+            //	缓存位置由ServiceCallSite内部的Cache属性的Location提供
             switch (callSite.Cache.Location)
             {
                 case CallSiteResultCacheLocation.Root:
@@ -34,22 +42,29 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
             }
         }
 
+        /// <summary>
+        /// 根据其ServiceCallSite的Kind属性访问服务对象
+        /// </summary>
+        /// <param name="callSite"></param>
+        /// <param name="argument"></param>
+        /// <returns></returns>
+        /// <exception cref="NotSupportedException"></exception>
         protected virtual TResult VisitCallSiteMain(ServiceCallSite callSite, TArgument argument)
         {
             switch (callSite.Kind)
             {
                 case CallSiteKind.Factory:
-                    return VisitFactory((FactoryCallSite)callSite, argument);
-                case  CallSiteKind.IEnumerable:
-                    return VisitIEnumerable((IEnumerableCallSite)callSite, argument);
+                    return VisitFactory((FactoryCallSite) callSite, argument);
+                case CallSiteKind.IEnumerable:
+                    return VisitIEnumerable((IEnumerableCallSite) callSite, argument);
                 case CallSiteKind.Constructor:
-                    return VisitConstructor((ConstructorCallSite)callSite, argument);
+                    return VisitConstructor((ConstructorCallSite) callSite, argument);
                 case CallSiteKind.Constant:
-                    return VisitConstant((ConstantCallSite)callSite, argument);
+                    return VisitConstant((ConstantCallSite) callSite, argument);
                 case CallSiteKind.ServiceProvider:
-                    return VisitServiceProvider((ServiceProviderCallSite)callSite, argument);
+                    return VisitServiceProvider((ServiceProviderCallSite) callSite, argument);
                 case CallSiteKind.ServiceScopeFactory:
-                    return VisitServiceScopeFactory((ServiceScopeFactoryCallSite)callSite, argument);
+                    return VisitServiceScopeFactory((ServiceScopeFactoryCallSite) callSite, argument);
                 default:
                     throw new NotSupportedException($"Call site type {callSite.GetType()} is not supported");
             }
@@ -79,9 +94,11 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
 
         protected abstract TResult VisitConstant(ConstantCallSite constantCallSite, TArgument argument);
 
-        protected abstract TResult VisitServiceProvider(ServiceProviderCallSite serviceProviderCallSite, TArgument argument);
+        protected abstract TResult VisitServiceProvider(ServiceProviderCallSite serviceProviderCallSite,
+            TArgument argument);
 
-        protected abstract TResult VisitServiceScopeFactory(ServiceScopeFactoryCallSite serviceScopeFactoryCallSite, TArgument argument);
+        protected abstract TResult VisitServiceScopeFactory(ServiceScopeFactoryCallSite serviceScopeFactoryCallSite,
+            TArgument argument);
 
         protected abstract TResult VisitIEnumerable(IEnumerableCallSite enumerableCallSite, TArgument argument);
 

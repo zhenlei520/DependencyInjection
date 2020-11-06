@@ -4,6 +4,10 @@ using System.Threading;
 
 namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
 {
+    /// <summary>
+    /// 一个创建或获取服务实例的类型
+    /// 创建和获取服务实例类型的访问者，这个类型泛型参数分别为RuntimeResolverContext类型和实例对象类型Object
+    /// </summary>
     internal sealed class CallSiteRuntimeResolver : CallSiteVisitor<RuntimeResolverContext, object>
     {
         public object Resolve(ServiceCallSite callSite, ServiceProviderEngineScope scope)
@@ -28,6 +32,7 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
             }
             else
             {
+                //如果当前构造器参数不为空,则实例化每一个参数的实例对象
                 parameterValues = new object[constructorCallSite.ParameterCallSites.Length];
                 for (var index = 0; index < parameterValues.Length; index++)
                 {
@@ -37,6 +42,7 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
 
             try
             {
+                //根据参数对象进行实例化对象并返回
                 return constructorCallSite.ConstructorInfo.Invoke(parameterValues);
             }
             catch (Exception ex) when (ex.InnerException != null)
@@ -104,17 +110,17 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
 
         protected override object VisitConstant(ConstantCallSite constantCallSite, RuntimeResolverContext context)
         {
-            return constantCallSite.DefaultValue;
+            return constantCallSite.DefaultValue;//直接返回ConstantCallSite的值
         }
 
         protected override object VisitServiceProvider(ServiceProviderCallSite serviceProviderCallSite, RuntimeResolverContext context)
         {
-            return context.Scope;
+            return context.Scope;//直接返回RuntimeResolverContext封装的容器
         }
 
         protected override object VisitServiceScopeFactory(ServiceScopeFactoryCallSite serviceScopeFactoryCallSite, RuntimeResolverContext context)
         {
-            return context.Scope.Engine;
+            return context.Scope.Engine;//直接返回容器内的ServiceProviderEngine
         }
 
         protected override object VisitIEnumerable(IEnumerableCallSite enumerableCallSite, RuntimeResolverContext context)
@@ -125,18 +131,28 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
 
             for (var index = 0; index < enumerableCallSite.ServiceCallSites.Length; index++)
             {
-                var value = VisitCallSite(enumerableCallSite.ServiceCallSites[index], context);
+                var value = VisitCallSite(enumerableCallSite.ServiceCallSites[index], context);//实例化IEnumerableCallSite.ServiceCallSites中所有的服务实例对象并赋值到数组中
                 array.SetValue(value, index);
             }
             return array;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="factoryCallSite"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
         protected override object VisitFactory(FactoryCallSite factoryCallSite, RuntimeResolverContext context)
         {
+            //调用工厂方法进行实例化
             return factoryCallSite.Factory(context.Scope);
         }
     }
 
+    /// <summary>
+    /// ServiceProviderEngineScope封装类型
+    /// </summary>
     internal struct RuntimeResolverContext
     {
         public ServiceProviderEngineScope Scope { get; set; }
