@@ -20,13 +20,13 @@ namespace Microsoft.Extensions.DependencyInjection.ServiceLookup
         {
 #if NETCOREAPP2_0
             if (RuntimeHelpers.TryEnsureSufficientExecutionStack())
-            {
+            {//尝试确保有足够的堆栈来执行平均 .NET Core 库函数
                 return true;
             }
 #else
             try
             {
-                RuntimeHelpers.EnsureSufficientExecutionStack();
+                RuntimeHelpers.EnsureSufficientExecutionStack();//确保剩余的堆栈控件足够大，可以执行一般的 .NET 函数
                 return true;
             }
             catch (InsufficientExecutionStackException)

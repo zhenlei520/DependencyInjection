@@ -15,6 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         /// <summary>
         /// <c>true</c> to perform check verifying that scoped services never gets resolved from root provider; otherwise <c>false</c>.
+        /// 是否需要检查生命周期
         /// </summary>
         public bool ValidateScopes { get; set; }
 
